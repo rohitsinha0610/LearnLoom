@@ -1,0 +1,96 @@
+{% extends 'layouts/indexapp.html' %}
+
+{% block title %}Stream Classwork Example{% endblock %}
+
+{% block content %}
+<style>
+    /* Style the active tab */
+    .nav-link.active {
+        font-weight: bold;
+        background-color: #007bff;
+        /* Blue color for active tab */
+        color: #fff;
+        /* White text color for active tab */
+    }
+
+    /* Style the navigation tabs */
+    .nav-tabs .nav-item .nav-link {
+        color: #333;
+        /* Default text color */
+        font-weight: normal;
+        border: 1px solid transparent;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+    .nav-tabs .nav-item .nav-link:hover {
+        color: #0056b3;
+        /* Darker blue on hover */
+        background-color: transparent;
+        border-color: #ddd;
+    }
+
+    /* Style the tab content container */
+    .tab-content {
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 0 5px 5px 5px;
+        /* Rounded corners at bottom */
+    }
+
+    /* Additional styles for tab links */
+    .nav-tabs .nav-link {
+        padding: 10px 20px;
+        /* Adjust padding for tab links */
+        border-color: #ddd;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    /* Add margin to the container */
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+</style>
+
+<div class="container">
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            {% if classroom.pk %}
+            <a class="nav-link active" id="stream-tab" data-toggle="tab" href="{% url 'classroom_page' pk=classroom.pk %}">Class</a>
+            {% else %}
+            <a class="nav-link" id="stream-tab" data-toggle="tab" href="#">Class</a>
+            {% endif %}
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="classwork-tab" data-toggle="tab" href="{% url 'assignment_page' %}">Assignments</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="people-tab" href="{% url 'people_page' %}">People</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="marks-tab" data-toggle="tab" href="#marksSection">Marks</a>
+        </li>
+    </ul>
+
+    <!-- Tab Content Container -->
+    <div class="tab-content">
+        {% block class %}
+        <!-- Default content for 'Class' tab -->
+        <div class="tab-pane fade show active">
+            {% if classroom %}
+            <h2>{{ classroom.class_name }}</h2>
+            <p>{{ classroom.subject_name }}</p>
+            <p>Created by: {{ classroom.class_creator.username }}</p>
+            {% else %}
+            <p>No classroom selected</p>
+            {% endif %}
+        </div>
+        {% endblock class %}
+    </div>
+</div>
+{% endblock %}

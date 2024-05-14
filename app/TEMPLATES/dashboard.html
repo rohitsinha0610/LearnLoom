@@ -1,0 +1,169 @@
+{% extends 'layouts/indexapp.html' %}
+
+{% block title %}LearnLoom: Dashboard{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Reset default margin and padding on the body */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        margin-bottom: 15px;
+    }
+
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        /* Allow cards to wrap to the next line */
+        justify-content: space-between;
+        /* Distribute space between cards */
+    }
+
+    .card {
+        width: 300px;
+        /* Fixed width for each card */
+        margin-bottom: 20px;
+        border-radius: 22px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 15px rgba(153, 153, 153, 0.3);
+        transition: box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 4px 25px rgba(153, 153, 153, 0.5);
+    }
+
+    .card img {
+        width: 100%;
+        height: auto;
+        border-radius: 22px 22px 0 0;
+        /* Rounded corners for top of image */
+    }
+
+    .card-content {
+        padding: 20px;
+    }
+
+    .btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-top: 15px;
+        background-color: #3167eb;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #254588;
+    }
+
+    .classrooms-container {
+        display: flex;
+        justify-content: space-between;
+        /* Arrange children with space between them */
+    }
+
+    @media (max-width: 768px) {
+        .classrooms-container {
+            flex-direction: column;
+            align-items: center;
+            /* Stack children vertically on smaller screens */
+        }
+
+        .card {
+            width: 100%;
+            /* Adjust card width to full width on smaller screens */
+        }
+    }
+</style>
+{% include 'layouts/background.html' %}
+</head>
+
+<body>{% load static %}
+
+    <div class="container">
+        <h1>Welcome, {{ request.user.first_name }} {{ request.user.last_name }}</h1>
+
+        <div class="classrooms-container">
+
+            <div class="created-classrooms">
+                <h2>Your Created Classrooms</h2>
+                {% for classroom in created_classrooms %}
+                {% if forloop.counter <= 10 %} <div class="card">
+
+                    <a href="{% url 'classroom_page' pk=classroom.pk %}" class="img-wrap" data-abc="true">
+                        <img src="{% static 'images/pic' %}{{ forloop.counter }}.jpeg" alt="Image">
+
+                    </a>
+                    <div class="card-content">
+                        <strong>{{ classroom.class_name }}</strong> ({{ classroom.subject_name }})<br>
+                        <span class="rated">Created at: {{ classroom.created_at }}</span>
+                        <a href="{% url 'assignment_page' %}" class="btn" data-abc="true">View Work</a>
+                    </div>
+            </div>
+            {% endif %}
+            {% empty %}
+            <p>No classrooms created yet!</p>
+            {% endfor %}
+        </div>
+
+        <div class="enrolled-classrooms">
+            <h2>Your Enrolled Classrooms</h2>
+            {% for classroom in enrolled_classrooms %}
+            {% if forloop.counter <= 10 %} <div class="card">
+                <a href="{% url 'classroom_page' pk=classroom.pk %}" class="img-wrap" data-abc="true">
+                    {% load custom_filters %}
+                    {% with result=forloop.counter|subtract:11 %}
+                    <img src="{% static 'images/pic' %}{{ result }}.jpeg" alt="Image">
+                    {% endwith %}
+                </a>
+                <div class="card-content">
+                    <strong>{{ classroom.class_name }}</strong> ({{ classroom.subject_name }})<br>
+                    <span class="rated">Created at: {{ classroom.created_at }}</span><br>
+                    <span class="teacher-list">Teacher(s):
+                        {% for teacher in classroom.teacher.all %}
+                        <span>{{ teacher.first_name }} {{ teacher.last_name }}</span>{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                        No teacher assigned
+                        {% endfor %}
+                    </span>
+                    <a href="{% url 'assignment_page' %}" class="btn" data-abc="true">View Work</a>
+                </div>
+        </div>
+        {% endif %}
+        {% empty %}
+        <p>No classrooms enrolled yet.</p>
+        {% endfor %}
+    </div>
+
+    </div>
+    </div>
+
+    {% endblock %}
