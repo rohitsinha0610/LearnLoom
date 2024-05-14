@@ -1,3 +1,7 @@
+Django Framework
+MySQL Database
+
+
 
 python3 -m venv venv_l
 ---> venv_l = virtual environment variable
